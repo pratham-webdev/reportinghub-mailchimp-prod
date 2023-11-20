@@ -24,38 +24,71 @@ client.setConfig({
     server: "us14",
   });
 
-app.post('/sheets', (req, res) => {
+app.post('/sheets/contact', (req, res) => {
     const fname = req.body.firstName;
     const lname = req.body.lastName;
     const email = req.body.email;
 
-    const data = [{
+    const contactData = {
         email_address: email,
         status: 'subscribed',
+        tags:['Contact Form'],
         merge_fields: {
             FNAME: fname,
             LNAME: lname
         }
-    }];
+    };
 
-    console.log(data);
+    console.log(contactData);
 
     const mailRun = async () => {
-        const response = await client.lists.batchListMembers(listID, {
-            members: data,
-          });
+        const response = await client.lists.addListMember(listID, contactData);
 
 
-        if (response.total_created > 0) {
+        if (response) {
             postStatus = 'Success'
-        } else if (response.error_count > 0) {
-            postStatus = response.errors;
         }
         res.send(postStatus);
         console.log(postStatus);
     }
 
-    mailRun().catch(err => console.log(err));
+    mailRun().catch(err => {
+        postStatus = 'There is an error';
+        res.send(postStatus);
+        console.log(err);
+        console.log(postStatus);
+    });
+
+});
+
+app.post('/sheets/blog', (req, res) => {
+    const email = req.body.email;
+
+    const blogData = {
+        email_address: email,
+        status: 'subscribed',
+        tags:['Blog Subscriber'],
+    };
+
+    console.log(blogData);
+
+    const mailRun = async () => {
+        const response = await client.lists.addListMember(listID, blogData);
+
+
+        if (response) {
+            postStatus = 'Success'
+        }
+        res.send(postStatus);
+        console.log(postStatus);
+    }
+
+    mailRun().catch(err => {
+        postStatus = 'There is an error';
+        res.send(postStatus);
+        console.log(err);
+        console.log(postStatus);
+    });
 
 });
 
