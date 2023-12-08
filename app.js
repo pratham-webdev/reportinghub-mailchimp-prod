@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 
 client.setConfig({
-    apiKey: "4158c7190a0a6888bdafb06c362dce62-us14",
+    apiKey: process.env.APIKEY,
     server: "us14",
   });
 
